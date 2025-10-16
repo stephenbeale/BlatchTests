@@ -274,9 +274,13 @@ namespace BlatchTests
             Assert.NotNull(result);
             Assert.Equal(testUsers.First().FirstName, result.Result.First().FirstName);
             Assert.Equal(testUsers.First().Longitude, result.Result.First().Longitude);
+            Assert.Equal(testUsers.First().Skills, result.Result.First().Skills);
+            Assert.Equal(testUsers.First().Colleagues, result.Result.First().Colleagues);
 
             Assert.Equal(testUsers.Last().FirstName, result.Result.Last().FirstName);
             Assert.Equal(testUsers.Last().Longitude, result.Result.Last().Longitude);
+            Assert.Equal(testUsers.Last().Skills, result.Result.Last().Skills);
+            Assert.Equal(testUsers.Last().Colleagues, result.Result.Last().Colleagues);
         }
     }
 }
