@@ -268,19 +268,31 @@ namespace BlatchTests
             //Act
             await dataAccess.CreateUserAddresses(testUsers);
             await dataAccess.CreateUsers(testUsers);
-            var result = dataAccess.GetAllUsers();
+            var result = await dataAccess.GetAllUsers();
 
             //Assert
-            Assert.NotNull(result);
-            Assert.Equal(testUsers.First().FirstName, result.Result.First().FirstName);
-            Assert.Equal(testUsers.First().Longitude, result.Result.First().Longitude);
-            Assert.Equal(testUsers.First().Skills, result.Result.First().Skills);
-            Assert.Equal(testUsers.First().Colleagues, result.Result.First().Colleagues);
+            var joe = result.Single(u => u.FirstName == "Joe");
+            Assert.Equal("Bloggs", joe.LastName);
+            Assert.Equal(-123.456, joe.Longitude);
+            Assert.Equal(2, joe.Skills.Count);
+            Assert.Contains("C#", joe.Skills);
+            Assert.Contains(".NET", joe.Skills);
+            Assert.Equal(2, joe.Colleagues.Count);
+            Assert.Contains("Jane Smith", joe.Colleagues);
+            Assert.Contains("Bob Johnson", joe.Colleagues);
 
-            Assert.Equal(testUsers.Last().FirstName, result.Result.Last().FirstName);
-            Assert.Equal(testUsers.Last().Longitude, result.Result.Last().Longitude);
-            Assert.Equal(testUsers.Last().Skills, result.Result.Last().Skills);
-            Assert.Equal(testUsers.Last().Colleagues, result.Result.Last().Colleagues);
+            var jane = result.Single(u => u.FirstName == "Jane");
+            Assert.Equal("Smith", jane.LastName);
+            Assert.Equal(-98.765, jane.Longitude);
+            Assert.Equal(2, jane.Skills.Count);
+            Assert.Contains("Java", jane.Skills);
+            Assert.Contains("Spring", jane.Skills);
+            Assert.Equal(2, jane.Colleagues.Count);
+            Assert.Contains("Joe Bloggs", jane.Colleagues);
+            Assert.Contains("Bob Johnson", jane.Colleagues);
+
+            await dataAccess.DeleteAllUsers();
+            await dataAccess.DeleteAllAddresses();
         }
     }
 }
