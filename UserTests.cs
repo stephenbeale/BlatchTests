@@ -294,5 +294,67 @@ namespace BlatchTests
             await dataAccess.DeleteAllUsers();
             await dataAccess.DeleteAllAddresses();
         }
+
+        [Fact]
+        public async Task GetUserById_Returns_Correct_User()
+        {
+            //Arrange 
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var dataAccess = new DataAccess(config);
+
+            await dataAccess.DeleteAllUsers();
+            await dataAccess.DeleteAllAddresses();
+
+            var testAddress = new Address
+            {
+                StreetNumber = "123",
+                StreetName = "Test St",
+                City = "TestCity",
+                StateOrCounty = "TS",
+                PostalCode = "12345",
+                Country = "USA"
+            };
+
+            var testUsers = new List<User> {
+                new User
+                {
+                    ID = Guid.NewGuid(),
+                    FirstName = "Joe",
+                    LastName = "Bloggs",
+                    Email = "1@1.com",
+                    Phone = "123-456-7890",
+                    Address = testAddress,
+                    Age = 21,
+                    Gender = "Male",
+                    Company = "TestCorp",
+                    Department = "Testing",
+                    HeadshotImage = "http://example.com/image.jpg",
+                    Longitude = -123.456,
+                    Latitude = 45.678,
+                    Skills = new List<string> { "C#", ".NET" },
+                    Colleagues = new List<string> { "Jane Smith", "Bob Johnson" },
+                    EmploymentStart = DateTimeOffset.Now.AddYears(-1),
+                    EmploymentEnd = null,
+                    FullName = "Joe Bloggs"
+                }
+            };
+
+            //Act
+            await dataAccess.CreateUserAddresses(testUsers);
+            await dataAccess.CreateUsers(testUsers);
+            var users = await dataAccess.GetAllUsers();
+
+            var result = await dataAccess.GetUserById(testUsers.First().ID);
+
+            //Assert            
+            Assert.NotNull(result);
+            Assert.Equal(testUsers.First().ID, result.ID);
+            Assert.Equal(testUsers.First().FirstName, result.FirstName);
+            Assert.Equal(testUsers.First().Email, result.Email);
+
+        }
     }
 }
